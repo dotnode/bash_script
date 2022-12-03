@@ -53,6 +53,11 @@ docker stop nginx-conf && docker rm nginx-conf
 #启动正式的
 docker run --name nginx -p 80:80  -v ${V_DATA}/nginx/www/default:/usr/share/nginx/html -v ${V_DATA}/nginx/conf/nginx.conf:/etc/nginx/nginx.conf -v ${V_DATA}/nginx/logs:/var/log/nginx -d nginx 
 #获得
-#CONTAINER_ID=$(docker ps -aqf "name=containername")
-#echo
-echo "docker nginx安装完成"
+CONTAINER_ID=$(docker ps -aqf "name=nginx")
+
+if [ ! CONTAINER_ID ]; then
+	#echo
+	echo "docker nginx安装完成"
+else
+    echo "docker nginx安装失败!"
+fi
