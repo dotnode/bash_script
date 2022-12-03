@@ -25,13 +25,11 @@ mkdir -p ${V_DATA}/nginx/www/default ${V_DATA}/nginx/logs ${V_DATA}/nginx/conf
 docker run --name nginx-conf -p 80:80 -d nginx
 #复制conf
 docker cp nginx-conf:/etc/nginx/nginx.conf ${V_DATA}/nginx/conf
-#stop nginx
-docker stop nginx-conf
-#删除 nginx镜像
-docker rm nginx-conf
+#stop nginx #删除 nginx镜像
+docker stop nginx-conf && docker rm nginx-conf
 #启动正式的
 docker run --name nginx -p 80:80  -v ${V_DATA}/nginx/www/default:/usr/share/nginx/html -v ${V_DATA}/nginx/conf/nginx.conf:/etc/nginx/nginx.conf -v ${V_DATA}/nginx/logs:/var/log/nginx -d nginx 
 #获得
-CONTAINER_ID=$(docker ps -aqf "name=containername")
+#CONTAINER_ID=$(docker ps -aqf "name=containername")
 #echo
 echo "docker nginx安装完成"
