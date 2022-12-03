@@ -26,11 +26,11 @@ docker run --name nginx-conf -p 80:80 -d nginx
 #复制conf
 docker cp nginx-conf:/etc/nginx/nginx.conf ${V_DATA}/nginx/conf
 #html
-docker cp nginx-conf:/usr/share/nginx/html ${V_DATA}/nginx/www/default
+docker cp nginx-conf:/usr/share/nginx/html/*.html ${V_DATA}/nginx/www/default
 #stop nginx #删除 nginx镜像
 docker stop nginx-conf && docker rm nginx-conf
 #index.html
-echo "<!DOCTYPE html><html><head><meta charset=\"utf-8\"><title>docker nginx</title></head><body><h1><center>docker nginx success!</center></h1><p><center>success!</center></p></body></html>" > /v_data/nginx/www/default/index.html
+# echo "<!DOCTYPE html><html><head><meta charset=\"utf-8\"><title>docker nginx</title></head><body><h1><center>docker nginx success!</center></h1><p><center>success!</center></p></body></html>" > /v_data/nginx/www/default/index.html
 #stop nginx #删除 nginx镜像 先删除
 #docker stop nginx && docker rm nginx
 #启动正式的
