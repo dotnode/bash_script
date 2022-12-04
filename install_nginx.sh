@@ -37,7 +37,7 @@ systemctl restart docker.service
 #拉取nginx镜像
 docker pull nginx
 #创建目录
-mkdir -p ${V_DATA}/nginx/www/default ${V_DATA}/nginx/logs ${V_DATA}/nginx/conf
+mkdir -p ${V_DATA}/nginx/www/default ${V_DATA}/nginx/www/vhost ${V_DATA}/nginx/logs ${V_DATA}/nginx/conf
 #先建立nginx
 docker run --name nginx-conf -p 80:80 -d nginx
 #复制conf
@@ -51,7 +51,7 @@ docker stop nginx-conf && docker rm nginx-conf
 #stop nginx #删除 nginx镜像 先删除
 #docker stop nginx && docker rm nginx
 #启动正式的
-docker run --name nginx -p 80:80  -v ${V_DATA}/nginx/www/default:/usr/share/nginx/html -v ${V_DATA}/nginx/conf/nginx.conf:/etc/nginx/nginx.conf -v ${V_DATA}/nginx/logs:/var/log/nginx -d nginx 
+docker run --name nginx -p 80:80  -v ${V_DATA}/nginx/www/default:/usr/share/nginx/html -v ${V_DATA}/nginx/conf/nginx.conf:/etc/nginx/nginx.conf -v ${V_DATA}/nginx/conf/vhost:/etc/nginx/conf.d -v ${V_DATA}/nginx/logs:/var/log/nginx -d nginx 
 #获得
 CONTAINER_ID=$(docker ps -aqf "name=nginx")
 
