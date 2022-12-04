@@ -48,7 +48,7 @@ mkdir -p ${V_DATA}/nginx/www/default ${V_DATA}/nginx/www ${V_DATA}/nginx/var/log
 #先建立nginx
 docker run --name nginx-conf -p 80:80 -d nginx
 #复制conf
-docker cp nginx-conf:/etc/nginx ${V_DATA}/nginx/etc/nginx
+docker cp nginx-conf:/etc/nginx ${V_DATA}/nginx/etc
 
 #html
 # docker cp nginx-conf:/usr/share/nginx/html/index.html ${V_DATA}/nginx/www/default
@@ -61,7 +61,7 @@ if [ $(docker ps -aqf "name=nginx") ]; then
 	docker stop nginx && docker rm nginx
 fi
 #启动正式的
-docker run --name nginx -p 80:80  -v ${V_DATA}/nginx/etc/nginx:/etc/nginx -v ${V_DATA}/nginx/var/log:/var/log/nginx -v ${V_DATA}/nginx/www:/www -d nginx
+docker run --name nginx -p 80:80  -v ${V_DATA}/nginx/etc/nginx:/etc/nginx -v ${V_DATA}/nginx/var/log/nginx:/var/log/nginx -v ${V_DATA}/nginx/www:/www -d nginx
 #获得
 CONTAINER_ID=$(docker ps -aqf "name=nginx")
 
