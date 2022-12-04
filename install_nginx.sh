@@ -61,7 +61,7 @@ if [ $(docker ps -aqf "name=nginx") ]; then
 	docker stop nginx && docker rm nginx
 fi
 #启动正式的
-docker run --name nginx -p 80:80  -v ${V_DATA}/nginx/etc/nginx:/etc/nginx -v ${V_DATA}/nginx/var/log/nginx:/var/log/nginx -v ${V_DATA}/nginx/www:/www -d nginx
+docker run --name nginx -p 80:80 -p 443:443 -v ${V_DATA}/nginx/etc/nginx:/etc/nginx -v ${V_DATA}/nginx/var/log/nginx:/var/log/nginx -v ${V_DATA}/nginx/www:/www -d nginx
 #获得
 CONTAINER_ID=$(docker ps -aqf "name=nginx")
 
