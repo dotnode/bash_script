@@ -55,7 +55,7 @@ docker run --name nginx -p 80:80  -v ${V_DATA}/nginx/www/default:/usr/share/ngin
 #获得
 CONTAINER_ID=$(docker ps -aqf "name=nginx")
 
-if [ ! CONTAINER_ID ]; then
+if [ CONTAINER_ID ]; then
 	#echo
 	echo "docker nginx安装完成"
 else
