@@ -105,17 +105,6 @@ Get_OS_Bit()
     fi
 }
 
-Check_Stack()
-{
-    if [[ -s /usr/local/nginx/sbin/nginx ]]; then
-        Get_Stack="nginx"
-    elif [[  -s /usr/local/apache/bin/httpd || -s /etc/init.d/httpd ]]; then
-        Get_Stack="apache"
-    else
-        Get_Stack="unknow"
-    fi
-}
-
 Color_Text()
 {
   echo -e " \e[0;$2m$1\e[0m"
@@ -131,16 +120,6 @@ Echo_Green()
   echo $(Color_Text "$1" "32")
 }
 
-Echo_Yellow()
-{
-  echo $(Color_Text "$1" "33")
-}
-
-Echo_Blue()
-{
-  echo $(Color_Text "$1" "34")
-}
-
 # Check if user is root
 if [ $(id -u) != "0" ]; then
     Echo_Red "Error: You must be root to run this script!"
@@ -153,17 +132,9 @@ if [ "${DISTRO}" = "unknow" ]; then
     exit 1
 fi
 
-Check_Stack
-if [[ "${Stack}" = "nginx" || "${Stack}" = "apache" ]]; then
-    Echo_Red "You have installed ${Stack}!"
-    exit 1
-fi
-
 clear
 echo "+-------------------------------------------+"
-echo "|    docker install nginx for ${DISTRO}     |"
-echo "+-------------------------------------------+"
-echo "|                                           |"
+echo "     docker install nginx for ${DISTRO}      "
 echo "+-------------------------------------------+"
 
 
@@ -171,9 +142,18 @@ echo "+-------------------------------------------+"
 BASE_PATH=$(cd `dirname $0`; pwd)
 V_DATA='/volume';
 
+if [ "$PM" = "yum" ]; then
+    yum -y remove httpd* nginx
+    yum clean all
+elif [ "$PM" = "apt" ]; then
+    apt-get --purge remove apache2.2
+    apt-get --purge remove apache2-doc
+    apt-get --purge remove apache2-utils
+    apt-get autoremove -y && apt-get clean
+fi
 
 #安装docker
-if [ $(docker -h) ]; then
+if [[ $(docker -h) ]]; then
 	#echo
 	echo "docker 已安装"
 else
@@ -188,19 +168,17 @@ systemctl restart docker.service
 docker pull nginx
 #创建目录
 mkdir -p ${V_DATA}/nginx/www/default ${V_DATA}/nginx/www ${V_DATA}/nginx/var/log ${V_DATA}/nginx/etc/nginx
+
+#echo
 #先建立nginx
-docker run --name nginx-conf -p 80:80 -d nginx
+docker run --name nginx-conf -d nginx
 #复制conf
 docker cp nginx-conf:/etc/nginx ${V_DATA}/nginx/etc
-
-#html
-# docker cp nginx-conf:/usr/share/nginx/html/index.html ${V_DATA}/nginx/www/default
 #stop nginx #删除 nginx镜像
 docker stop nginx-conf && docker rm nginx-conf
-#index.html
-# echo "<!DOCTYPE html><html><head><meta charset=\"utf-8\"><title>docker nginx</title></head><body><h1><center>docker nginx success!</center></h1><p><center>success!</center></p></body></html>" > /v_data/nginx/www/default/index.html
+
 #stop nginx #删除 nginx镜像 先删除
-if [[ -s $(docker ps -aqf "name=nginx") ]]; then
+if [[ $(docker ps -aqf "name=nginx") ]]; then
 	docker stop nginx && docker rm nginx
 fi
 #启动正式的
@@ -208,9 +186,9 @@ docker run --name nginx -p 80:80 -p 443:443 -v ${V_DATA}/nginx/etc/nginx:/etc/ng
 #获得
 CONTAINER_ID=$(docker ps -aqf "name=nginx")
 
-if [[ -s CONTAINER_ID ]]; then
+if [[ CONTAINER_ID ]]; then
 	#echo
-	echo "docker nginx安装完成"
+	Echo_Green "docker nginx安装完成"
 else
-    echo "docker nginx安装失败!"
+    Echo_Red "docker nginx安装失败!"
 fi
